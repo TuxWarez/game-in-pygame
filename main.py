@@ -1,6 +1,8 @@
 import pygame
+import math
 
 COLOR = (0xAA, 0, 0)
+color_gun = (0, 0xAA, 0)
 SURFACE_COLOR = (0xAA, 0xAA, 0xAA)
 
 class Sprite(pygame.sprite.Sprite):
@@ -34,10 +36,13 @@ class Sprite(pygame.sprite.Sprite):
         if self.rect.y <= 0:
             self.rect.y += speed
 
-def drawStyleRect(surface):
-    pygame.draw.rect(surface, (0,0,255), (x,y,150,150), 0)
-    for i in range(4):
-        pygame.draw.rect(surface, (0,0,0), (x-i,y-i,155,155), 1)
+    def rotateRight(self, rotate):
+        self.rect.x += (math.sin(rotate) * 25)
+        self.rect.y += (math.cos(rotate) * 25)
+
+    def rotateLeft(self, rotate):
+        self.rect.x -= (math.sin(rotate) * 25)
+        self.rect.y -= (math.cos(rotate) * 25)
 
 background_colour = (0xAA, 0xAA, 0xAA)
 screen = pygame.display.set_mode((640, 480))
@@ -54,6 +59,7 @@ all_sprites_list.add(object_)
 clock = pygame.time.Clock()
 
 running = True
+rotate_sy = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -68,6 +74,12 @@ while running:
         object_.moveForward(5)
     if keys[pygame.K_UP]:
         object_.moveBack(5)
+    if keys[pygame.K_q]:
+        rotate_sy += 0.25
+        object_.rotateRight(rotate_sy)
+    if keys[pygame.K_e]:
+        rotate_sy -= 0.25
+        object_.rotateLeft(rotate_sy)
 
     all_sprites_list.update()
     screen.fill(SURFACE_COLOR)
